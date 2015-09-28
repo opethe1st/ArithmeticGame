@@ -5,20 +5,29 @@ and given 10 seconds to answer.
 from random import randint
 import time as t
 
-def generateQuestion(level,operator):
-    """First draft. I think a better way to do this would make this easier to generalise would be to generate an
-    expression string as the question and evaluate it and return the expression string and the answer"""
+def generateExpression(level):
     a = randint(10**(level-1),10**level)
     b = randint(10**(level-1),10**level)
-    result = a*b
-    return a,b,str(result)
+    return "%d x %d"%(a,b),a,b
+def evaluateExpression():
+    pass
+def generateQuestion(level):
+    """First draft. I think a better way to do this would make this easier to generalise would be to generate an
+    expression string as the question and evaluate it and return the expression string and the answer. Make use of a
+    generateExpression function and an evaluateExpression function"""
+
+    expr,a,b = generateExpression(level)
+    result = a*b #This would be replaces with generateQuestion
+    return expr,str(result)
 
 def run(level,times):
+    "Run the game a given number of times, at a certain level. The level indicates the number of digits of the numbers"
     i = 0
     while i<times:
-        a,b,result= generateQuestion(level,"")
-        print "What is the product of %d and %d"%(a,b)
+        expr,result= generateQuestion(level)
+        print "What is the %s"%expr
         start = t.time()
+        #I want to use a better way of doing the timeout. I want it to stop requesting for input once it has timed out
         ans = raw_input('Answer Now!')
         elapsedTime = t.time()-start
         if elapsedTime>10:
