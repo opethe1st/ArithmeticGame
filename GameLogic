@@ -8,23 +8,49 @@ I am going to provide generateExpression, evaluateExpression, Timeout and checkA
 from random import randint
 import time as t
 
-def generateExpression(level):
-    a = randint(10**(level-1),10**level)
-    b = randint(10**(level-1),10**level)
-    return "%d x %d"%(a,b),a,b
-def evaluateExpression():
-    pass
+def generateNum(level):
+    """ I am  noticing that I am having to use 10**level blah blah to generate a number often."""
+    return randint(10*(level-1),10*(level)-1)
+
+def expression(level,nest):
+    """numOrExpr = 1, indicates that a number is generated. if it is 0, an expression is generated. The nest is used
+    limit the number of nests"""
+    if nest<2: #Number of possible nestings of expressions
+        numOrExpr = randint(0,2)
+    else:
+        numOrExpr = 1
+
+    if numOrExpr:
+        return str(randint(10**(level-1),10**level))
+    else:
+        nest+=1
+        return "".join(["(",generateExpression(level,nest),")"])
+
+def generateExpression(level,nest):
+    a = expression(level,0)
+    b = expression(level,0)
+    possibleOperators = ["*","/","-","+"]
+    operator = possibleOperators[randint(0,3)]
+    #randint, not pythonic, randint(0,3) includes 3. that's major crap
+    return "%s %s %s"%(a,operator,b)
+def evaluateExpression(st):
+    #The thing to note though is that it uses integer division.And seems to follow BODMAS
+    return str(eval(st))
 def generateQuestion(level):
     """First draft. I think a better way to do this would make this easier to generalise would be to generate an
     expression string as the question and evaluate it and return the expression string and the answer. Make use of a
     generateExpression function and an evaluateExpression function"""
 
-    expr,a,b = generateExpression(level)
-    result = a*b #This would be replaces with generateQuestion
+    expr = generateExpression(level,0)
+    result = evaluateExpression(expr) #This would be replaces with generateQuestion
     return expr,str(result)
 
 def checkAnswer(CorrectAnswer,UserAnswer):
-    pass
+    """Currently a stub"""
+    if CorrectAnswer==UserAnswer:
+        return True
+    else:
+        return False
 
 def run(level,times):
     """Run the game a given number of times, at a certain level. The level indicates the number of digits of the numbers"""
