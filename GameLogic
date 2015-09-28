@@ -1,6 +1,9 @@
 """ This is a game that tests skills with Arithmetic. The user is given a number to add, multiply , subtract or divide
 and given 10 seconds to answer.
 """
+""" At this moment, I am violating the strict logic layer thing. Because I need to be able to test as I go.
+I am going to provide generateExpression, evaluateExpression, Timeout and checkAnswer as public methods to the UI layer
+"""
 
 from random import randint
 import time as t
@@ -20,8 +23,11 @@ def generateQuestion(level):
     result = a*b #This would be replaces with generateQuestion
     return expr,str(result)
 
+def checkAnswer(CorrectAnswer,UserAnswer):
+    pass
+
 def run(level,times):
-    "Run the game a given number of times, at a certain level. The level indicates the number of digits of the numbers"
+    """Run the game a given number of times, at a certain level. The level indicates the number of digits of the numbers"""
     i = 0
     while i<times:
         expr,result= generateQuestion(level)
@@ -37,7 +43,7 @@ def run(level,times):
         if TimeOut:
             print "Time has run out. The answer is %s"%result
         elif ans==result and not TimeOut:
-            print "That's correct!"
+            print "That's correct! It took you %f"%elapsedTime
         if  ans!= result:
             print "That's wrong. The answer is %s"%result
         i+=1
