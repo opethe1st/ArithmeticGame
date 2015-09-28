@@ -1,4 +1,4 @@
-""" This is a game that tests skills with Arithmetic. The user is given a number to add, multiply , subtract or divide
+""" This is a game that tests skills with Arithmetic. The user is given an expression to evaluate
 and given 10 seconds to answer.
 """
 """ At this moment, I am violating the strict logic layer thing. Because I need to be able to test as I go.
@@ -10,31 +10,33 @@ import time as t
 
 def generateNum(level):
     """ I am  noticing that I am having to use 10**level blah blah to generate a number often."""
-    return randint(10*(level-1),10*(level)-1)
+    return randint(10*(level-1)+1,10*(level)-1)
 
 def expression(level,nest):
     """numOrExpr = 1, indicates that a number is generated. if it is 0, an expression is generated. The nest is used
     limit the number of nests"""
     if nest<2: #Number of possible nestings of expressions
-        numOrExpr = randint(0,2)
+        numOrExpr = randint(0,1)
     else:
         numOrExpr = 1
 
     if numOrExpr:
-        return str(randint(10**(level-1),10**level))
+        return str(generateNum(level))
     else:
         nest+=1
         return "".join(["(",generateExpression(level,nest),")"])
 
 def generateExpression(level,nest):
-    a = expression(level,0)
-    b = expression(level,0)
-    possibleOperators = ["*","/","-","+"]
-    operator = possibleOperators[randint(0,3)]
+    a = expression(level,nest)
+    b = expression(level,nest)
+    possibleOperators = ["*","-","+"] #I removed division, there are going to be problems with division by zero
+    operator = possibleOperators[randint(0,len(possibleOperators)-1)]
+
     #randint, not pythonic, randint(0,3) includes 3. that's major crap
     return "%s %s %s"%(a,operator,b)
 def evaluateExpression(st):
-    #The thing to note though is that it uses integer division.And seems to follow BODMAS
+    #The thing to note though is that it uses integer division.And seems to follow BODMAS.
+    #This is currently giving me problems. Sometimes I get zero division. Even no division is involved
     return str(eval(st))
 def generateQuestion(level):
     """First draft. I think a better way to do this would make this easier to generalise would be to generate an
