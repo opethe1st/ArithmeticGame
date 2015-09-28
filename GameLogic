@@ -1,0 +1,35 @@
+""" This is a game that tests skills with Arithmetic. The user is given a number to add, multiply , subtract or divide
+and given 10 seconds to answer.
+"""
+
+from random import randint
+import time as t
+
+def generateQuestion(level,operator):
+    """First draft. I think a better way to do this would make this easier to generalise would be to generate an
+    expression string as the question and evaluate it and return the expression string and the answer"""
+    a = randint(10**(level-1),10**level)
+    b = randint(10**(level-1),10**level)
+    result = a*b
+    return a,b,str(result)
+
+def run(level,times):
+    i = 0
+    while i<times:
+        a,b,result= generateQuestion(level,"")
+        print "What is the product of %d and %d"%(a,b)
+        start = t.time()
+        ans = raw_input('Answer Now!')
+        elapsedTime = t.time()-start
+        if elapsedTime>10:
+            TimeOut = True
+        else:
+            TimeOut = False
+        if TimeOut:
+            print "Time has run out. The answer is %s"%result
+        elif ans==result and not TimeOut:
+            print "That's correct!"
+        if  ans!= result:
+            print "That's wrong. The answer is %s"%result
+        i+=1
+run(1,5)
