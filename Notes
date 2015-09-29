@@ -10,8 +10,8 @@ I am thinking of doing a ranking based on speed of answering questions.
 Also do testing.
 
 29/9/2015
-I thought I understood wxPython or even just a little. But it turns out it is laughing at me...to my face if I must add.
-I couldn't even get the GUI to appear and this is despite working on someone's elses code that had wxPython. This is why
+I thought I understood wxPython or even just a little. But it turns out, it is laughing at me...to my face if I must add.
+I couldn't even get the GUI to appear and this is despite working on someone's else code that had wxPython. This is why
 I hate half knowledge. It is dangerous. One must know the basics. it is fine to tinker and get shit to work. But more
 important to know the basics well...with sufficient depth.
 Another thing I just learnt, You can't import a python module if it doesnt have the .py extension
