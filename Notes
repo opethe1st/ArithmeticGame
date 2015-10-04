@@ -18,6 +18,13 @@ Another thing I just learnt, You can't import a python module if it doesnt have 
 I have got the GUI to show, but the code is messy in my opinion. I will clean it up before I commit. I need to rereading
 wxPython.
 
-20/9/2015
+30/9/2015
 I have made a bit of progress, I cant say I have a functioning GUI yet. I am working on making the parts work first before
 committing anything.
+
+2/10/2015
+I worked on this over the weekend on my bro's laptop
+
+4/10/2015
+I check it on my bro's laptop and it turns out that it works differently on Linux. That's going to be a problem if I can
+'t code on Ubuntu and it displays correctly on Windows
