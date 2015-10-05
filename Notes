@@ -26,5 +26,8 @@ committing anything.
 I worked on this over the weekend on my bro's laptop
 
 4/10/2015
-I check it on my bro's laptop and it turns out that it works differently on Linux. That's going to be a problem if I can
-'t code on Ubuntu and it displays correctly on Windows
+I checked it on my bro's laptop and it turns out that it displays differently on Linux. That's going to be a problem if I
+can't code on Ubuntu and it displays the same way on Windows
+
+5/10/2015
+Turns out Layout() is quite important if one wants the panels to display correctly.
