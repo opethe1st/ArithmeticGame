@@ -41,3 +41,5 @@ I need self.timer not timer.
 Something isn't quite right with my timeout addition. My program should stop the timer once a correct answer has been
 gotten. or a wrong one even.
 Next would be to implement scoring based on the speed it took to answer a given question. I have implemented it.
+Next, I need to find out why after changing the num of rounds or the time required to answer my program never ends.
+Fixed that bug. Turns out I wasn't converting my selection into integers.

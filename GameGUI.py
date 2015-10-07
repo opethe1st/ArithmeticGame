@@ -60,13 +60,13 @@ class ArithmeticGame(wx.Frame):
 
         r  = config.ShowModal()
         if r == wx.ID_OK:
-            self.TimeReq = 10*(int(lb.GetSelection())+1)
-            self.NUMROUNDS = numrounds[lb2.GetSelection()]
+            self.TimeReq = int(times[lb.GetSelection()])
+            self.NUMROUNDS = int(numrounds[lb2.GetSelection()])
 
 
     def __startPage(self,panel):
         """This the start page. Shall we Begin?yes or no"""
-
+        self.settingsMenu.Enable(1000,True)
         self.numCorrectAns = 0
         self.count = 0
         FrameSizer = wx.BoxSizer(wx.VERTICAL)   #Sizer for the main frame
@@ -109,7 +109,8 @@ class ArithmeticGame(wx.Frame):
 
     def __newQuestion(self,panel):
         """A method to display the Questions page"""
-        #self.Layout()
+        #Can't change settings in the middle of a game
+        self.settingsMenu.Enable(1000,False) #I fixed 1000 for some reason , earlier when I was setting up settingsMenu
         FrameSizer = wx.BoxSizer(wx.VERTICAL)
         panelSizer = wx.BoxSizer(wx.VERTICAL)
 
