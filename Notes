@@ -37,4 +37,7 @@ I added the Settings menu. There is some bug... once I change it, it seems the p
 
 7/10/2015
 I have added the timeout setting. Turns out that the timers have to belong to the object instance. So in a function,
-I need self.timer not timer. 
+I need self.timer not timer.
+Something isn't quite right with my timeout addition. My program should stop the timer once a correct answer has been
+gotten. or a wrong one even.
+Next would be to implement scoring based on the speed it took to answer a given question. I have implemented it.

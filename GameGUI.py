@@ -19,7 +19,7 @@ class ArithmeticGame(wx.Frame):
         #self.size = (350,200)           #Size of the panels.
         self.nest = 0                   #maximum number of possible nesting of expressions
         self.answer = None              #What the user put as the answer.
-        self.TimeReq = 10                #Initial time required to answer a question.
+        self.TimeReq = 5                #Initial time required to answer a question.
         self.TimeOut = False
         #Create a Menu
         self.settingsMenu = wx.Menu()
@@ -36,7 +36,7 @@ class ArithmeticGame(wx.Frame):
         config = wx.Dialog(self,0,title="Settings",size=(200,170))
         sizer = wx.BoxSizer(wx.VERTICAL)
         TimText = wx.StaticText(config, -1, "Select the time you need to answer a question",)
-        times = ['10','20','30' ]
+        times = ['5','10','20' ]
 
         lb = wx.Choice(config, -1, (85, 18),choices=times)
         sizer.Add(TimText,0)
@@ -138,8 +138,9 @@ class ArithmeticGame(wx.Frame):
         self.SetSizer(FrameSizer)
         self.Layout()
         self.Show()
+        self.start = t.time()
 
-    def isCorrectPage(self,panel,message):
+    def isCorrectPage(self,panel,message,score=0):
         self.Layout()
         FrameSizer = wx.BoxSizer(wx.VERTICAL)
         panelSizer = wx.BoxSizer(wx.VERTICAL)
@@ -147,8 +148,11 @@ class ArithmeticGame(wx.Frame):
         font = wx.Font(15,wx.FONTFAMILY_DEFAULT,wx.FONTSTYLE_NORMAL,wx.FONTWEIGHT_BOLD)
         CorrectMessage.SetFont(font)
 
-        CorrectAnswer = wx.StaticText(panel,label = "The correct answer is %s"%(self.CorrectAns))
-        font = wx.Font(13,wx.FONTFAMILY_DEFAULT,wx.FONTSTYLE_NORMAL,wx.FONTWEIGHT_NORMAL)
+        label = "The correct answer is %s. "%(self.CorrectAns)
+        if score!=0:
+            label += "You scored %d"%score
+        CorrectAnswer = wx.StaticText(panel,label = label)
+        font = wx.Font(10,wx.FONTFAMILY_DEFAULT,wx.FONTSTYLE_NORMAL,wx.FONTWEIGHT_NORMAL)
         CorrectAnswer.SetFont(font)
 
         panelSizer.Add(CorrectMessage,0,wx.ALIGN_CENTER)
@@ -163,7 +167,7 @@ class ArithmeticGame(wx.Frame):
         self.Show()
 
     def __resultPage(self,panel):
-
+        self.timer1.Stop()
         self.Layout()
         FrameSizer = wx.BoxSizer(wx.VERTICAL)
         panelSizer = wx.BoxSizer(wx.VERTICAL)
@@ -218,15 +222,19 @@ class ArithmeticGame(wx.Frame):
         self.Bind(wx.EVT_TIMER,self.update,self.timer)
 
     def correctAns(self,e):
+        self.elapsedTime = t.time()-self.start
+        print self.elapsedTime
+        self.timer1.Stop()
         ans = self.inputAns.GetLineText(0)
         self.panel.Destroy()
         self.panel = wx.Panel(self )
         if GameLogic.checkAnswer(ans,self.CorrectAns):
             isCorrect = "Correct!"
+            self.isCorrectPage(self.panel,isCorrect,20-int(self.elapsedTime))
             self.numCorrectAns+=1
         else:
             isCorrect ="Wrong!"
-        self.isCorrectPage(self.panel,isCorrect)
+            self.isCorrectPage(self.panel,isCorrect)
         self.timer = wx.Timer(self)
         self.timer.Start(2000)
         self.Bind(wx.EVT_TIMER,self.update,self.timer)
