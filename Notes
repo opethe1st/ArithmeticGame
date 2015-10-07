@@ -31,3 +31,10 @@ can't code on Ubuntu and it displays the same way on Windows
 
 5/10/2015
 Turns out Layout() is quite important if one wants the panels to display correctly.
+
+6/10/2015
+I added the Settings menu. There is some bug... once I change it, it seems the program doesnt stop
+
+7/10/2015
+I have added the timeout setting. Turns out that the timers have to belong to the object instance. So in a function,
+I need self.timer not timer. 
