@@ -43,3 +43,8 @@ gotten. or a wrong one even.
 Next would be to implement scoring based on the speed it took to answer a given question. I have implemented it.
 Next, I need to find out why after changing the num of rounds or the time required to answer my program never ends.
 Fixed that bug. Turns out I wasn't converting my selection into integers.
+
+Is this enough for a version 1.1? What have I implemented?
+-Settings
+-TimeOut
+-Scoring

@@ -1,10 +1,15 @@
 #!/usr/bin/env python
+
 """This is where the GUI of the Arithmetic game is going to be. It is going to use methods from the GameLogic file.
 specifically the generateExpression and evaluateExpression methods"""
 
 import GameLogic
 import wx
 import time as t
+
+class MyApp(wx.App):
+    def OnInit(self):
+        return True
 
 class ArithmeticGame(wx.Frame):
     """This is the main frame """
@@ -16,11 +21,13 @@ class ArithmeticGame(wx.Frame):
         self.numCorrectAns = 0          #Initially the number of correct Answers is Zero
         self.CorrectAns = None          #Correct Answer to a given question. here so it can be shared by other methods
         self.RunBefore = False          #Flag to check if the program has been run before.Here so it can checked by other programs
+        self.TotalScore = 0
         #self.size = (350,200)           #Size of the panels.
         self.nest = 0                   #maximum number of possible nesting of expressions
         self.answer = None              #What the user put as the answer.
         self.TimeReq = 5                #Initial time required to answer a question.
         self.TimeOut = False
+
         #Create a Menu
         self.settingsMenu = wx.Menu()
         self.settingsMenu.Append(1000,"Settings","Adjust Program Settings")
@@ -172,7 +179,9 @@ class ArithmeticGame(wx.Frame):
         self.Layout()
         FrameSizer = wx.BoxSizer(wx.VERTICAL)
         panelSizer = wx.BoxSizer(wx.VERTICAL)
-        Result = wx.StaticText(panel,label="You got %d/%d correct "%(self.numCorrectAns,self.NUMROUNDS))
+        Result = wx.StaticText(panel,label="You got %d/%d correct\nYour total score was %d "%(self.numCorrectAns,self.NUMROUNDS,self.TotalScore))
+        font = wx.Font(15,wx.FONTFAMILY_DEFAULT,wx.FONTSTYLE_NORMAL,wx.FONTWEIGHT_NORMAL)
+        Result.SetFont(font)
 
         startStop = wx.Panel(panel)             #Panel to contain the yes and no buttons
         ynsizer = wx.BoxSizer(wx.HORIZONTAL)    #sizer for the panel
@@ -232,6 +241,7 @@ class ArithmeticGame(wx.Frame):
         if GameLogic.checkAnswer(ans,self.CorrectAns):
             isCorrect = "Correct!"
             self.isCorrectPage(self.panel,isCorrect,20-int(self.elapsedTime))
+            self.TotalScore += 20-int(self.elapsedTime)
             self.numCorrectAns+=1
         else:
             isCorrect ="Wrong!"
@@ -262,6 +272,6 @@ class ArithmeticGame(wx.Frame):
         self.__startPage(self.panel)
 #NewPage is used just once I think. I should probably remove it
 
-app = wx.App(False)
+app = MyApp(False)
 ArithmeticGame(None)
 app.MainLoop()
