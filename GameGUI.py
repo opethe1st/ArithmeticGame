@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 """This is where the GUI of the Arithmetic game is going to be. It is going to use methods from the GameLogic file.
 specifically the generateExpression and evaluateExpression methods"""
@@ -22,7 +22,7 @@ class ArithmeticGame(wx.Frame):
         self.CorrectAns = None          #Correct Answer to a given question. here so it can be shared by other methods
         self.RunBefore = False          #Flag to check if the program has been run before.Here so it can checked by other programs
         self.TotalScore = 0
-        #self.size = (350,200)           #Size of the panels.
+        self.size = (350,200)           #Size of the panels.
         self.nest = 0                   #maximum number of possible nesting of expressions
         self.answer = None              #What the user put as the answer.
         self.TimeReq = 5                #Initial time required to answer a question.
@@ -111,7 +111,7 @@ class ArithmeticGame(wx.Frame):
     def staPage(self,e):
         """Destroy the previous panel and create the StartPage. This can be in StartPage? Nah..because self,event"""
         self.panel.Destroy()
-        self.panel = wx.Panel(self )
+        self.panel = wx.Panel(self,size = self.size)
         self.__startPage(self.panel)
 
     def __newQuestion(self,panel):
@@ -150,6 +150,12 @@ class ArithmeticGame(wx.Frame):
 
     def isCorrectPage(self,panel,message,score=0):
         self.Layout()
+        if message=="Correct!":
+            self.panel.SetBackgroundColour('Yellow')
+            self.panel.Refresh
+        else:
+            self.panel.SetBackgroundColour('Red')
+            self.panel.Refresh
         FrameSizer = wx.BoxSizer(wx.VERTICAL)
         panelSizer = wx.BoxSizer(wx.VERTICAL)
         CorrectMessage = wx.StaticText(panel,label = message)
@@ -206,7 +212,7 @@ class ArithmeticGame(wx.Frame):
 
     def resPage(self,e):
         self.panel.Destroy()
-        self.panel = wx.Panel(self )
+        self.panel = wx.Panel(self,size = self.size)
         self.__resultPage(self.panel)
 
     def newPage(self,e):
@@ -214,7 +220,7 @@ class ArithmeticGame(wx.Frame):
         if not self.RunBefore:
             self.RunBefore=True
         self.panel.Destroy()
-        self.panel = wx.Panel(self )
+        self.panel = wx.Panel(self,size = self.size)
         if self.count<self.NUMROUNDS:
             self.__newQuestion(self.panel)
             self.count+=1
@@ -223,7 +229,7 @@ class ArithmeticGame(wx.Frame):
 
     def timedOut(self,e):
         self.panel.Destroy()
-        self.panel = wx.Panel(self )
+        self.panel = wx.Panel(self,size = self.size)
         self.TimeOut = True
         timeout ="Time Out!"
         self.isCorrectPage(self.panel,timeout)
@@ -237,7 +243,7 @@ class ArithmeticGame(wx.Frame):
         self.timer1.Stop()
         ans = self.inputAns.GetLineText(0)
         self.panel.Destroy()
-        self.panel = wx.Panel(self )
+        self.panel = wx.Panel(self,size = self.size)
         if GameLogic.checkAnswer(ans,self.CorrectAns):
             isCorrect = "Correct!"
             self.isCorrectPage(self.panel,isCorrect,20-int(self.elapsedTime))
@@ -255,20 +261,20 @@ class ArithmeticGame(wx.Frame):
         if self.timer.IsRunning():
             self.timer.Stop()
             self.panel.Destroy()
-            self.panel = wx.Panel(self )
+            self.panel = wx.Panel(self,size = self.size)
             self.__newQuestion(self.panel)
             self.count+=1
 
         if self.count>self.NUMROUNDS:
             self.panel.Destroy()
-            self.panel = wx.Panel(self )
+            self.panel = wx.Panel(self,size = self.size)
             self.__resultPage(self.panel)
 
     def exit(self,e):
         self.Destroy()
 
     def run(self):
-        self.panel = wx.Panel(self )
+        self.panel = wx.Panel(self,size = self.size)
         self.__startPage(self.panel)
 #NewPage is used just once I think. I should probably remove it
 
