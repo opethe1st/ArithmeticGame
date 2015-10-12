@@ -1,3 +1,4 @@
+from __future__ import division
 """ This is a game that tests skills with Arithmetic. The user is given an expression to evaluate
 and given 10 seconds to answer.
 """
@@ -7,6 +8,7 @@ I am going to provide generateExpression, evaluateExpression, Timeout and checkA
 
 from random import randint
 import time as t
+import fractions
 
 def generateNum(level):
     """ I am  noticing that I am having to use 10**level blah blah to generate a number often."""
@@ -29,7 +31,7 @@ def expression(level,nest,MaxNest):
 def generateExpression(level,nest,MaxNest):
     a = expression(level,nest,MaxNest)
     b = expression(level,nest,MaxNest)
-    possibleOperators = ["*","-","+"] #I removed division, there are going to be problems with division by zero
+    possibleOperators = ["*","-","+","/"] #I removed division, there are going to be problems with division by zero
     operator = possibleOperators[randint(0,len(possibleOperators)-1)]
 
     #randint, not pythonic, randint(0,3) includes 3. that's major crap
@@ -42,14 +44,18 @@ def generateQuestion(level=1,MaxNest=1):
     """First draft. I think a better way to do this would make this easier to generalise would be to generate an
     expression string as the question and evaluate it and return the expression string and the answer. Make use of a
     generateExpression function and an evaluateExpression function"""
-
-    expr = generateExpression(level,0,MaxNest)
-    result = evaluateExpression(expr) #This would be replaces with generateQuestion
+    while True:
+        try:
+            expr = generateExpression(level,0,MaxNest)
+            result = fractions.Fraction(evaluateExpression(expr)).limit_denominator(1000)
+            break
+        except ZeroDivisionError:
+            pass
     return expr,str(result)
 
 def checkAnswer(CorrectAnswer,UserAnswer):
     """Currently a stub"""
-    if CorrectAnswer==UserAnswer:
+    if fractions.Fraction(CorrectAnswer)==fractions.Fraction(UserAnswer):
         return True
     else:
         return False

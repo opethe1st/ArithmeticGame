@@ -122,8 +122,9 @@ class ArithmeticGame(wx.Frame):
         panelSizer = wx.BoxSizer(wx.VERTICAL)
 
         #The main use of GameLogic. Generates a Queston and Answer pair
-        expr,self.CorrectAns = GameLogic.generateQuestion(1,self.nest)
-
+        self.numdigit = 1
+        expr,self.CorrectAns = GameLogic.generateQuestion(self.numdigit,self.nest)
+        #print expr,self.CorrectAns
         question = wx.StaticText(panel,label="%s = \n"%expr)
         font = wx.Font(15,wx.FONTFAMILY_DEFAULT,wx.FONTSTYLE_NORMAL,wx.FONTWEIGHT_NORMAL)
         question.SetFont(font)
