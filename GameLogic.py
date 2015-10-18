@@ -39,6 +39,7 @@ def generateExpression(level,nest,MaxNest):
 def evaluateExpression(st):
     #The thing to note though is that it uses integer division.And seems to follow BODMAS.
     #This is currently giving me problems. Sometimes I get zero division. Even no division is involved
+    #Fixed. I have imported division from __future__ and I am using the fractions module.
     return str(eval(st))
 def generateQuestion(level=1,MaxNest=1):
     """First draft. I think a better way to do this would make this easier to generalise would be to generate an
@@ -54,7 +55,7 @@ def generateQuestion(level=1,MaxNest=1):
     return expr,str(result)
 
 def checkAnswer(CorrectAnswer,UserAnswer):
-    """Currently a stub"""
+    """Checks if an answer is correct. Seems a little superfluous"""
     if fractions.Fraction(CorrectAnswer)==fractions.Fraction(UserAnswer):
         return True
     else:

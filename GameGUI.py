@@ -25,12 +25,13 @@ class ArithmeticGame(wx.Frame):
         self.size = (350,200)           #Size of the panels.
         self.nest = 0                   #maximum number of possible nesting of expressions
         self.answer = None              #What the user put as the answer.
-        self.TimeReq = 5                #Initial time required to answer a question.
+        self.TimeReq = 10                #Initial time required to answer a question.
         self.TimeOut = False
 
         #Create a Menu
         self.settingsMenu = wx.Menu()
-        self.settingsMenu.Append(1000,"Settings","Adjust Program Settings")
+        self.settingsId = 1000
+        self.settingsMenu.Append(self.settingsId,"Settings","Adjust Program Settings")
         self.menuBar = wx.MenuBar()
         self.menuBar.Append(self.settingsMenu,"Settings")
         self.Bind(wx.EVT_MENU,self.configure)
@@ -73,7 +74,7 @@ class ArithmeticGame(wx.Frame):
 
     def __startPage(self,panel):
         """This the start page. Shall we Begin?yes or no"""
-        self.settingsMenu.Enable(1000,True)
+        self.settingsMenu.Enable(self.settingsId,True)
         self.numCorrectAns = 0
         self.count = 0
         FrameSizer = wx.BoxSizer(wx.VERTICAL)   #Sizer for the main frame
