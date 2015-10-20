@@ -56,9 +56,12 @@ def generateQuestion(level=1,MaxNest=1):
 
 def checkAnswer(CorrectAnswer,UserAnswer):
     """Checks if an answer is correct. Seems a little superfluous"""
-    if fractions.Fraction(CorrectAnswer)==fractions.Fraction(UserAnswer):
-        return True
-    else:
+    try:
+        if fractions.Fraction(CorrectAnswer)==fractions.Fraction(UserAnswer):
+            return True
+        else:
+            return False
+    except:
         return False
 
 def run(level,times):
