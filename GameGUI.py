@@ -22,6 +22,7 @@ class ArithmeticGame(wx.Frame):
         self.CorrectAns = None          #Correct Answer to a given question. here so it can be shared by other methods
         self.RunBefore = False          #Flag to check if the program has been run before.Here so it can checked by other programs
         self.TotalScore = 0
+        self.timer1 = wx.Timer(self)
         global size
         size = (500,300)           #Size of the panels.
         self.nest = 0                   #maximum number of possible nesting of expressions
@@ -79,6 +80,7 @@ class ArithmeticGame(wx.Frame):
         self.settingsMenu.Enable(self.settingsId,True)
         self.numCorrectAns = 0
         self.count = 0
+        self.TotalScore = 0
         FrameSizer = wx.BoxSizer(wx.VERTICAL)   #Sizer for the main frame
         self.panel.Destroy()
         self.panel = wx.Panel(self,size = size)
@@ -160,7 +162,7 @@ class ArithmeticGame(wx.Frame):
             self.panel.SetBackgroundColour('LightGreen')
             self.panel.Refresh()
         else:
-            self.panel.SetBackgroundColour('Pink')
+            self.panel.SetBackgroundColour((255,100,100))
             self.panel.Refresh()
         #FrameSizer = wx.BoxSizer(wx.VERTICAL)
         panelSizer = wx.BoxSizer(wx.VERTICAL)
