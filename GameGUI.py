@@ -9,6 +9,8 @@ import time as t
 
 class MyApp(wx.App):
     def OnInit(self):
+        f = ArithmeticGame(None)
+        f.Show()
         return True
 
 class ArithmeticGame(wx.Frame):
@@ -16,31 +18,36 @@ class ArithmeticGame(wx.Frame):
     def __init__(self,parent):
         """Initiaize variables plus run the program"""
         wx.Frame.__init__(self,parent,pos=(500,300),title = "'rithmetik",size=(500,300))
+        self.initialize()
+        self.createMenu()
+        self.run()                      #The equivalent of the main program.
+
+    def initialize(self):
         self.count = 0                 #counter, number of times, the program has asked a question
         self.NUMROUNDS = 5             #Constant to hold the number of times the question is asked
         self.numCorrectAns = 0          #Initially the number of correct Answers is Zero
         self.CorrectAns = None          #Correct Answer to a given question. here so it can be shared by other methods
         self.RunBefore = False          #Flag to check if the program has been run before.Here so it can checked by other programs
         self.TotalScore = 0
-        self.timer1 = wx.Timer(self)
+        self.timer = wx.Timer(self)
+
         global size
         size = (500,300)           #Size of the panels.
-        self.nest = 0                   #maximum number of possible nesting of expressions
+        self.nest = 1                   #maximum number of possible nesting of expressions
         self.answer = None              #What the user put as the answer.
         self.TimeReq = 10                #Initial time required to answer a question.
         self.TimeOut = False
 
         self.panel = wx.Panel(self)
-        #Create a Menu
+
+    def createMenu(self):
         self.settingsMenu = wx.Menu()
-        self.settingsId = 1000
+        self.settingsId = wx.NewId()
         self.settingsMenu.Append(self.settingsId,"Settings","Adjust Program Settings")
         self.menuBar = wx.MenuBar()
         self.menuBar.Append(self.settingsMenu,"Settings")
         self.Bind(wx.EVT_MENU,self.configure)
         self.SetMenuBar(self.menuBar)
-        #main program
-        self.run()                      #The equivalent of the main program.
 
     def configure(self,e):
         """Adjust the required time to answer a question. change the nesting."""
@@ -77,13 +84,14 @@ class ArithmeticGame(wx.Frame):
 
     def __startPage(self):
         """This the start page. Shall we Begin?yes or no"""
+        self.timer.Start()
         self.settingsMenu.Enable(self.settingsId,True)
         self.numCorrectAns = 0
         self.count = 0
         self.TotalScore = 0
         FrameSizer = wx.BoxSizer(wx.VERTICAL)   #Sizer for the main frame
         self.panel.Destroy()
-        self.panel = wx.Panel(self,size = size)
+        self.panel = wx.Panel(self,size = self.GetSize())
         panelSizer = wx.BoxSizer(wx.VERTICAL)   #sizer for the panel
         self.panel.SetBackgroundColour('White')
         #self.panel.Refresh()
@@ -96,7 +104,7 @@ class ArithmeticGame(wx.Frame):
         ynsizer = wx.BoxSizer(wx.HORIZONTAL)    #sizer for the panel
         yes = wx.Button(startStop,label="Blue")  #The yes button
         yes.SetBackgroundColour("LightBlue")
-        self.Bind(wx.EVT_BUTTON,self.newPage,yes)  #bind the yes button to self.newPage
+        self.Bind(wx.EVT_BUTTON,self.update,yes)  #bind the yes button to update
         no = wx.Button(startStop,label= "Red")
         no.SetBackgroundColour("Pink")
         self.Bind(wx.EVT_BUTTON,self.resPage,no) #Display the resultPage if the user selects No
@@ -112,14 +120,13 @@ class ArithmeticGame(wx.Frame):
         self.panel.SetSizer(panelSizer)
 
         #self.Layout()
-        self.Show()
+        #self.Show()
 
-    def staPage(self,e):
-        """Destroy the previous panel and create the StartPage. This can be in StartPage? Nah..because self,event"""
-        self.__startPage()
 
-    def __newQuestion(self,panel):
+    def __newQuestion(self):
         """A method to display the Questions page"""
+        self.panel.Destroy()
+        self.panel = wx.Panel(self,size = self.GetSize())
         #Can't change settings in the middle of a game
         self.settingsMenu.Enable(1000,False) #I fixed 1000 for some reason , earlier when I was setting up settingsMenu
         #FrameSizer = wx.BoxSizer(wx.VERTICAL)
@@ -131,15 +138,15 @@ class ArithmeticGame(wx.Frame):
         self.numdigit = 1
         expr,self.CorrectAns = GameLogic.generateQuestion(self.numdigit,self.nest)
         #print expr,self.CorrectAns
-        question = wx.StaticText(panel,label="%s = \n"%expr)
+        question = wx.StaticText(self.panel,label="%s = \n"%expr)
         font = wx.Font(15,wx.FONTFAMILY_DEFAULT,wx.FONTSTYLE_NORMAL,wx.FONTWEIGHT_NORMAL)
         question.SetFont(font)
 
-        self.inputAns = wx.TextCtrl(panel,style = wx.TE_PROCESS_ENTER,size=(40,20))
+        self.inputAns = wx.TextCtrl(self.panel,style = wx.TE_PROCESS_ENTER,size=(40,20))
 
-        self.timer1 = wx.Timer(self)
-        self.timer1.Start(self.TimeReq*1000,oneShot=True)
-        self.Bind(wx.EVT_TIMER,self.timedOut,self.timer1)
+        self.timer = wx.Timer(self)
+        self.timer.Start(self.TimeReq*1000,oneShot=True)
+        self.Bind(wx.EVT_TIMER,self.timedOut,self.timer)
 
         self.Bind(wx.EVT_TEXT_ENTER,self.correctAns,self.inputAns)
 
@@ -147,13 +154,13 @@ class ArithmeticGame(wx.Frame):
         panelSizer.Add(question,0,wx.ALIGN_CENTER)
         panelSizer.Add(self.inputAns,0,wx.ALIGN_CENTER)
         panelSizer.AddStretchSpacer(2)
-        panel.SetSizer(panelSizer)
+        self.panel.SetSizer(panelSizer)
         #FrameSizer.AddStretchSpacer(1)
         #FrameSizer.Add(panel,0,wx.ALIGN_CENTER)
         #FrameSizer.AddStretchSpacer(2)
         #self.SetSizer(FrameSizer)
         self.Layout()
-        self.Show()
+        #self.Show()
         self.start = t.time()
 
     def isCorrectPage(self,panel,message,score=0):
@@ -166,7 +173,7 @@ class ArithmeticGame(wx.Frame):
             self.panel.Refresh()
         #FrameSizer = wx.BoxSizer(wx.VERTICAL)
         panelSizer = wx.BoxSizer(wx.VERTICAL)
-        CorrectMessage = wx.StaticText(panel,label = message)
+        CorrectMessage = wx.StaticText(self.panel,label = message)
         font = wx.Font(15,wx.FONTFAMILY_DEFAULT,wx.FONTSTYLE_NORMAL,wx.FONTWEIGHT_BOLD)
         CorrectMessage.SetFont(font)
 
@@ -182,20 +189,20 @@ class ArithmeticGame(wx.Frame):
         panelSizer.Add(CorrectAnswer,0,wx.ALIGN_CENTER)
         panelSizer.AddStretchSpacer(2)
 
-        panel.SetSizer(panelSizer)
+        self.panel.SetSizer(panelSizer)
         #FrameSizer.AddStretchSpacer(1)
         #FrameSizer.Add(panel,0,wx.ALIGN_CENTER)
         #FrameSizer.AddStretchSpacer(2)
         #self.SetSizer(FrameSizer)
         self.Layout()
-        self.Show()
+        #self.Show()
 
     def __resultPage(self):
-        self.timer1.Stop()
+        self.timer.Stop()
         self.Layout()
         #FrameSizer = wx.BoxSizer(wx.VERTICAL)
         self.panel.Destroy()
-        self.panel = wx.Panel(self,size = size)
+        self.panel = wx.Panel(self,size = self.GetSize())
         panelSizer = wx.BoxSizer(wx.VERTICAL)
         Result = wx.StaticText(self.panel,label="You got %d/%d correct\nYour total score was %d "%(self.numCorrectAns,self.NUMROUNDS,self.TotalScore))
         font = wx.Font(15,wx.FONTFAMILY_DEFAULT,wx.FONTSTYLE_NORMAL,wx.FONTWEIGHT_NORMAL)
@@ -205,7 +212,7 @@ class ArithmeticGame(wx.Frame):
         startStop.SetBackgroundColour("LightGray")
         ynsizer = wx.BoxSizer(wx.HORIZONTAL)    #sizer for the panel
         yes = wx.Button(startStop,label="Play")  #The yes button
-        self.Bind(wx.EVT_BUTTON,self.staPage,yes)  #bind the yes button to self.newPage
+        self.Bind(wx.EVT_BUTTON,self.staPage,yes)  #bind the yes button to s
         no = wx.Button(startStop,label= "Quit")
         self.Bind(wx.EVT_BUTTON,self.exit,no) #Display the resultPage if the user selects No
         ynsizer.Add(yes)
@@ -223,27 +230,22 @@ class ArithmeticGame(wx.Frame):
         #FrameSizer.AddStretchSpacer(2)
         #self.SetSizer(FrameSizer)
         self.Layout()
-        self.Show()
-
-    def resPage(self,e):
-
-        self.__resultPage()
+        #self.Show()
 
     def newPage(self,e):
         #""
         if not self.RunBefore:
             self.RunBefore=True
-        self.panel.Destroy()
-        self.panel = wx.Panel(self,size = size)
+        self.panel = wx.Panel(self,size = self.GetSize())
         if self.count<self.NUMROUNDS:
-            self.__newQuestion(self.panel)
+            self.__newQuestion()
             self.count+=1
         else:
             self.__resultPage()
 
     def timedOut(self,e):
         self.panel.Destroy()
-        self.panel = wx.Panel(self,size = size)
+        self.panel = wx.Panel(self,size = self.GetSize())
         self.TimeOut = True
         timeout ="Time Out!"
         self.isCorrectPage(self.panel,timeout)
@@ -254,7 +256,7 @@ class ArithmeticGame(wx.Frame):
     def correctAns(self,e):
         self.elapsedTime = t.time()-self.start
         print self.elapsedTime
-        self.timer1.Stop()
+        self.timer.Stop()
         ans = self.inputAns.GetLineText(0)
         self.panel.Destroy()
         self.panel = wx.Panel(self,size = size)
@@ -275,13 +277,20 @@ class ArithmeticGame(wx.Frame):
         if self.timer.IsRunning():
             self.timer.Stop()
             self.panel.Destroy()
-            self.panel = wx.Panel(self,size = size)
-            self.__newQuestion(self.panel)
+            self.panel = wx.Panel(self,size = self.GetSize())
+            self.__newQuestion()
             self.count+=1
 
         if self.count>self.NUMROUNDS:
 
             self.__resultPage()
+
+    def staPage(self,e):
+        """create the StartPage. This can be in StartPage? Nah..because self,event"""
+        self.__startPage()
+
+    def resPage(self,e):
+        self.__resultPage()
 
     def exit(self,e):
         self.Destroy()
@@ -289,8 +298,7 @@ class ArithmeticGame(wx.Frame):
     def run(self):
         #self.panel = wx.Panel(self,size = size)
         self.__startPage()
-#NewPage is used just once I think. I should probably remove it
+
 
 app = MyApp(False)
-ArithmeticGame(None)
 app.MainLoop()
